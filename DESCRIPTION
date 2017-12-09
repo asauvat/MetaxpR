@@ -1,0 +1,10 @@
+Package: MetaxpR
+Version: 0.4.3
+Date: 2017-05-04
+Title: MetaxpR
+Description: Basic functions for communicating with MetaXpress software
+Imports: RODBC,EBImage
+Author: Allan Sauvat <allan.sauvat@gustaveroussy.fr>
+Maintainer: Allan Sauvat <allan.sauvat@gustaveroussy.fr>
+License: GPL (> 2)
+RoxygenNote: 6.0.1
