@@ -26,7 +26,7 @@
 #'
 
 GetMDCData = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',MeasurementID, getsite = T, TimeCourse = F){
-
+  
   if(missing(MeasurementID)){
     return('Please give the measurement ID !')
   }
@@ -52,11 +52,11 @@ GetMDCData = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',MeasurementI
   
   #=====================================================
   
-  if(getsite==T){
+  if(getsite){
     SITES = sqlQuery(ch,paste('SELECT SITE_ID, X_POSITION, Y_POSITION FROM SITE WHERE PLATE_ID = ',PLATE_ID))
   }
   
-  if(TimeCourse == T){
+  if(TimeCourse){
     TIME = sqlQuery(ch,paste('SELECT SERIES_ID, T_INDEX, T_MICROSECONDS FROM SERIES_INFO WHERE SERIES_ID IN ',paste('(',paste(unique(RES$SERIES_ID),collapse=','),')',sep='')))
     RES = merge(RES, TIME, by = 'SERIES_ID' )
   }
@@ -79,10 +79,10 @@ GetMDCData = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',MeasurementI
   RES[,c(4:ncol(RES))] = apply(RES[,c(4:ncol(RES))],2,function(x)as.numeric(as.character(x)))
   colnames(RES)[1:4] = c('Cell.ID','Site.ID','Well.ID','Plate.ID')
   
-  
-  if(TimeCourse==T){
+  if(TimeCourse){
     colnames(RES)=gsub('T_INDEX','TimePoint',colnames(RES))
     colnames(RES)=gsub('T_MICROSECONDS','Time.Microseconds',colnames(RES))
+    RES=RES[order(RES$TimePoint),,drop=F]
   }
   
   RES=RES[order(RES$Well.ID), , drop = FALSE]
@@ -91,25 +91,17 @@ GetMDCData = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',MeasurementI
   }
   
   #====================================================
-  if(getsite==T){
-    
+  if(getsite){
     RES=merge(RES,SITES,by.x='Site.ID',by.y='SITE_ID')
+    colnames(RES)[colnames(RES)=='X_POSITION']='Site.X'
+    colnames(RES)[colnames(RES)=='Y_POSITION']='Site.Y'
     
     Xmax = max(SITES$X_POSITION)
     Ymax = max(SITES$Y_POSITION)
     Nsites = Xmax*Ymax
-
-    for(i in 1:length(SITES$SITE_ID)){
-      
-      XS = SITES$X_POSITION[i]
-      YS = SITES$Y_POSITION[i]
-      
-      Site = XS + Xmax*(YS-1)
-      RES$Site.ID[which(RES$Site.ID==SITES$SITE_ID[i])] = Site
-      
-    }
     
-    RES=RES[order(RES$TimePoint,RES$Well.ID),,drop=F]
+    RES$Site.ID=RES$Site.X+Xmax*(RES$Site.Y-1)
+    RES=RES[order(RES$Well.ID,RES$Site.ID),,drop=F]
   }
   #====================================================
   
