@@ -5,7 +5,7 @@
 \title{Whole Image Query}
 \usage{
 GetIM(SERVER = "MDCStore", ID = "moldev", PWD = "moldev", PlateID, WellID,
-  SiteID = c(2, 2), Range = lapply(1:3, function(x) c(0, 0.1)),
+  SiteID = c(1, 1), Range = lapply(1:3, function(x) c(0, 0.1)),
   use.autoRange = T, col.order = c("blue", "green", "red"),
   channel.choice = 1:3, disp = "raster", TimeCourse = F, TimePoint = 1,
   resize = F, dim.resize = 600, returnMat = F, ...)

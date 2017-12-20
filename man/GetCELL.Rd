@@ -4,14 +4,18 @@
 \alias{GetCELL}
 \title{Cell Image Query}
 \usage{
-GetCELL(SERVER = "MDCStore", PlateID, WellID, SiteID = 1,
-  Range = lapply(1:3, function(x) c(0, 0.1)), use.autoRange = T,
-  col.order = c("blue", "green", "red"), channel.choice = 1:3,
-  disp = "raster", TimeCourse = F, TimePoint = 1, returnMat = F,
-  CellStep = 50, xcoord, ycoord, fullIm = T, ...)
+GetCELL(SERVER = "MDCStore", ID = "moldev", PWD = "moldev", PlateID,
+  WellID, SiteID = c(1, 1), Range = lapply(1:3, function(x) c(0, 0.1)),
+  use.autoRange = T, col.order = c("blue", "green", "red"),
+  channel.choice = 1:3, disp = "raster", TimeCourse = F, TimePoint = 1,
+  returnMat = F, CellStep = 50, xcoord, ycoord, fullIm = T, ...)
 }
 \arguments{
 \item{SERVER}{the odbc connexion to MDCStore database. Ignored if DB given}
+
+\item{ID}{the identifiant for connexion. Ignored if DB given}
+
+\item{PWD}{the password for connexion. Ignored if DB given}
 
 \item{PlateID}{the PlateID of the image}
 
@@ -40,10 +44,6 @@ GetCELL(SERVER = "MDCStore", PlateID, WellID, SiteID = 1,
 \item{ycoord}{y coordinate of cell pixel centroid}
 
 \item{fullIm}{shall full image be returned or cell zoom only?}
-
-\item{ID}{the identifiant for connexion. Ignored if DB given}
-
-\item{PWD}{the password for connexion. Ignored if DB given}
 
 \item{resize}{shall the returned image be resized ?}
 
