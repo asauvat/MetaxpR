@@ -57,7 +57,8 @@ GetMDCData = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',MeasurementI
   }
   
   if(TimeCourse){
-    TIME = sqlQuery(ch,paste('SELECT SERIES_ID, T_INDEX, T_MICROSECONDS FROM SERIES_INFO WHERE SERIES_ID IN ',paste('(',paste(unique(RES$SERIES_ID),collapse=','),')',sep='')))
+    #TIME = sqlQuery(ch,paste('SELECT SERIES_ID, T_INDEX, T_MICROSECONDS FROM SERIES_INFO WHERE SERIES_ID IN ',paste('(',paste(unique(RES$SERIES_ID),collapse=','),')',sep='')))
+    TIME=data.frame(t(sapply(unique(RES$SERIES_ID),function(x)sqlQuery(ch,paste('SELECT SERIES_ID, T_INDEX, T_MICROSECONDS FROM SERIES_INFO WHERE SERIES_ID IN (',x,')')))))
     RES = merge(RES, TIME, by = 'SERIES_ID' )
   }
   
@@ -76,7 +77,11 @@ GetMDCData = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',MeasurementI
   #=====================================================
   
   RES=RES[,!grepl("SERIES_ID|PRINTED_SPOT_ID|SUBSTANCE_NAME|SETTING_ID|RUN_ID|INSTANCE|WELL_X|WELL_Y",colnames(RES))] #Useless columns...
-  RES[,c(4:ncol(RES))] = apply(RES[,c(4:ncol(RES))],2,function(x)as.numeric(as.character(x)))
+  Types=which(sapply(colnames(RES),function(x)typeof(RES[,x]))!='double')
+  Types=Types[4:length(Types)]
+  if(length(Types)>1){
+  RES[,Types]=apply(RES[,Types],2,function(x)as.numeric(as.character(x)))
+  }else{RES[,Types]=as.character(RES[,Types])}
   colnames(RES)[1:4] = c('Cell.ID','Site.ID','Well.ID','Plate.ID')
   
   if(TimeCourse){
