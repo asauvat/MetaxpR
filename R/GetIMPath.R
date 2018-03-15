@@ -42,12 +42,15 @@ GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, Well
   WTAB = sqlQuery(ch,paste0("SELECT * FROM SITE WHERE PLATE_ID=",PlateID," AND WELL_X=",WellX,"AND WELL_Y=",WellY))
   WTAB = WTAB[which(WTAB$X_POSITION==SiteID[1] & WTAB$Y_POSITION==SiteID[2]),]
   
+  if(nrow(WTAB)==0){
+    PATH=NULL
+  }else{
   ID = sqlQuery(ch,paste0("SELECT IMAGE_ID FROM PLATE_IMAGES WHERE SITE_ID=",WTAB$SITE_ID,"AND T_INDEX=",TimePoint))
   IMINFO = sqlQuery(ch,paste0("SELECT OBJ_SERVER_NAME,LOCATION_ID FROM PLATE_IMAGE_DATA WHERE OBJ_ID IN (",paste0(ID[,"IMAGE_ID"],collapse=','),")"))
   
   ROOT = sqlQuery(ch,paste0("SELECT SERVER_NAME,DIRECTORY FROM FILE_LOCATION WHERE LOCATION_ID=",IMINFO$LOCATION_ID[1]))
   PATH = paste0(ROOT$SERVER_NAME,ROOT$DIRECTORY,'\\',IMINFO$OBJ_SERVER_NAME)
-  
+  }
   #======================================================
   odbcClose(ch)
   
