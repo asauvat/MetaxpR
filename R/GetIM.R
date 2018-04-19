@@ -21,6 +21,7 @@
 #' @param dim.resize the size of resized image. Ignored if resize=FALSE
 #' @param returnMat shall image matrix be returned instead of dispayed ?
 #'
+#'
 #' @return a raster image or EBImage::Image class element
 #'
 #' @author Allan Sauvat, \email{allan.sauvat@gustaveroussy.fr}

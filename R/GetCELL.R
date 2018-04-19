@@ -24,6 +24,7 @@
 #' @param xcoord x coordinate of cell pixel centroid
 #' @param ycoord y coordinate of cell pixel centroid
 #' @param fullIm shall full image be returned or cell zoom only?
+#'
 #' @return a raster image or Image class element
 #'
 #' @author Allan Sauvat, \email{allan.sauvat@gustaveroussy.fr}
