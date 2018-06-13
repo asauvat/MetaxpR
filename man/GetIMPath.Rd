@@ -5,7 +5,8 @@
 \title{Quick image name finding}
 \usage{
 GetIMPath(SERVER = "MDCStore", ID = "moldev", PWD = "moldev", PlateID,
-  WellID, SiteID, TimePoint = 1, Unix.diff = c("//", "/media/"))
+  WellID, SiteID, TimePoint = 1, pst = "\\\\", Unix.diff = c("//",
+  "/media/"))
 }
 \arguments{
 \item{SERVER}{the odbc connexion to MDCStore database}
@@ -21,6 +22,8 @@ GetIMPath(SERVER = "MDCStore", ID = "moldev", PWD = "moldev", PlateID,
 \item{SiteID}{a vector of 2 integers showing x and y site positions. If only one site present, x and y equal 0}
 
 \item{TimePoint}{From what timepoint the image name should be returned. Default is 1.}
+
+\item{pst}{collapsing pattern. Default is '\\'. Empty '' can be needed in some cases.}
 
 \item{Unix.diff}{the string replacement for the mounting point of UNC image location, when accessed from linux machine}
 }

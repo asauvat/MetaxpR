@@ -11,6 +11,7 @@
 #' @param WellID the Well Identifier
 #' @param SiteID a vector of 2 integers showing x and y site positions. If only one site present, x and y equal 0
 #' @param TimePoint From what timepoint the image name should be returned. Default is 1.
+#' @param pst collapsing pattern. Default is '\\'. Empty '' can be needed in some cases.
 #' @param Unix.diff the string replacement for the mounting point of UNC image location, when accessed from linux machine
 #'
 #' @return A string array containing full image names
@@ -27,7 +28,7 @@
 #' @export
 #'
 
-GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, WellID,SiteID,TimePoint=1,Unix.diff=c('//','/media/')){
+GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, WellID,SiteID,TimePoint=1,pst='\\',Unix.diff=c('//','/media/')){
   
   #======================================================
   
@@ -46,11 +47,11 @@ GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, Well
   if(nrow(WTAB)==0){
     PATH=NULL
   }else{
-  ID = sqlQuery(ch,paste0("SELECT IMAGE_ID FROM PLATE_IMAGES WHERE SITE_ID=",WTAB$SITE_ID,"AND T_INDEX=",TimePoint))
-  IMINFO = sqlQuery(ch,paste0("SELECT OBJ_SERVER_NAME,LOCATION_ID FROM PLATE_IMAGE_DATA WHERE OBJ_ID IN (",paste0(ID[,"IMAGE_ID"],collapse=','),")"))
+  IMID = sqlQuery(ch,paste0("SELECT IMAGE_ID FROM PLATE_IMAGES WHERE SITE_ID=",WTAB$SITE_ID,"AND T_INDEX=",TimePoint))
+  IMINFO = sqlQuery(ch,paste0("SELECT OBJ_SERVER_NAME,LOCATION_ID FROM PLATE_IMAGE_DATA WHERE OBJ_ID IN (",paste0(IMID[,"IMAGE_ID"],collapse=','),")"))
   
   ROOT = sqlQuery(ch,paste0("SELECT SERVER_NAME,DIRECTORY FROM FILE_LOCATION WHERE LOCATION_ID=",IMINFO$LOCATION_ID[1]))
-  PATH = paste0(ROOT$SERVER_NAME,ROOT$DIRECTORY,'\\',IMINFO$OBJ_SERVER_NAME)
+  PATH = paste0(ROOT$SERVER_NAME,ROOT$DIRECTORY,pst,IMINFO$OBJ_SERVER_NAME)
   if(.Platform$OS.type=='unix'){
     PATH=gsub(Unix.diff[1],Unix.diff[2],gsub('[\\]','/',PATH))
     }
