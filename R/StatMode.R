@@ -1,17 +1,17 @@
 #' Better than mean for non-Gaussian distribution scaling
 #'
-#' Get peak value of data distribution
+#' Get statistical mode of data distribution
 #'
 #' @param x A numerical vector 
 #' @param use.log Shall a log10 transformation be applied ?
 #'
-#' @return A double which corresponds to the abciss of maximum density
+#' @return A double which corresponds to the max value of the probability mass function
 #'
 #' @author Allan Sauvat, \email{allan.sauvat@gustaveroussy.fr}
 #'
 #' @export
 #'
-peak.calc = function(x,use.log=F){
+stat.mode = function(x,use.log=F){
   
   if(use.log){
   dens = density(x)
