@@ -8,6 +8,7 @@
 #' @param dat data frame coming from \code{\link{GetMDCData}}
 #' @param coi column Of Interest to be exported into FCS
 #' @param export folder location where data will be exported
+#' @param wlab column name that contain well identifier. Default ix 'Well.ID' which is return by \code{\link{GetMDCData}}
 #' @param proj character string with project name
 #' @return NULL
 #'
@@ -21,7 +22,7 @@
 #' @export
 #'
 
-MX2FCS = function(dat,coi,export,proj=''){
+MX2FCS = function(dat,coi,export,wlab='Well.ID',proj=''){
   
   if(!dir.exists(export)){
     dir.create(export)
@@ -43,8 +44,8 @@ MX2FCS = function(dat,coi,export,proj=''){
   #Create objects and files
   flf = flowFrame(exprs=as.matrix(cbind(dat[,coi],'Event Count'=1:nrow(dat))),parameters=as(fpar,'AnnotatedDataFrame'),description=fdesc)
   write.FCS(flf, paste0(export,'/','aggregate.fcs'))
-  sapply(unique(dat$Well.ID),function(w){
-    flf = flowFrame(exprs=as.matrix(cbind(dat[which(dat$Well.ID==w),coi],'Event Count'=1:length(which(dat$Well.ID==w)))),parameters=as(fpar,'AnnotatedDataFrame'),description=fdesc)
+  sapply(unique(dat[,wlab]),function(w){
+    flf = flowFrame(exprs=as.matrix(cbind(dat[which(dat[,wlab]==w),coi],'Event Count'=1:length(which(dat[,wlab]==w)))),parameters=as(fpar,'AnnotatedDataFrame'),description=fdesc)
     write.FCS(flf, paste0(export,'/',w,'.fcs'))
   })
   

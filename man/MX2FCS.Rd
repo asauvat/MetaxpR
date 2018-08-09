@@ -4,7 +4,7 @@
 \alias{MX2FCS}
 \title{Export cell data as Flow Cytometry Standard}
 \usage{
-MX2FCS(dat, coi, export, proj = "")
+MX2FCS(dat, coi, export, wlab = "Well.ID", proj = "")
 }
 \arguments{
 \item{dat}{data frame coming from \code{\link{GetMDCData}}}
@@ -12,6 +12,8 @@ MX2FCS(dat, coi, export, proj = "")
 \item{coi}{column Of Interest to be exported into FCS}
 
 \item{export}{folder location where data will be exported}
+
+\item{wlab}{column name that contain well identifier. Default ix 'Well.ID' which is return by \code{\link{GetMDCData}}}
 
 \item{proj}{character string with project name}
 }
