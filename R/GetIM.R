@@ -11,6 +11,7 @@
 #' @param PlateID the PlateID of the image
 #' @param WellID the WellID of the image
 #' @param SiteID the SiteID of the image
+#' @param Z The Z position of the image. Default is 1, value if no stacks is recorded. 0 for max projection, if recorded
 #' @param Range a list containing range values dor each channel image normalization (see normalize from EBImage)
 #' @param col.order the order of colours to be applied when combining channels
 #' @param channel.choice channel selection (3 maximum)
@@ -33,7 +34,7 @@
 #' @export
 #'
 
-GetIM = function(SERVER = 'MDCStore',ID='moldev',PWD='moldev',PlateID,WellID,SiteID = c(1,1),Range = lapply(1:3,function(x)c(0,0.1)),use.autoRange = T,col.order=c('blue','green','red'),
+GetIM = function(SERVER = 'MDCStore',ID='moldev',PWD='moldev',PlateID,WellID,SiteID = c(1,1),Z=1,Range = lapply(1:3,function(x)c(0,0.1)),use.autoRange = T,col.order=c('blue','green','red'),
                  channel.choice = 1:3,disp = 'raster',TimeCourse = F, TimePoint = 1, resize = F,dim.resize=600, returnMat = F,...){
   
   #======================================================================================
@@ -43,7 +44,7 @@ GetIM = function(SERVER = 'MDCStore',ID='moldev',PWD='moldev',PlateID,WellID,Sit
   }
   #======================================================================================
 
-  ImagePath = GetIMPath(SERVER,ID,PWD,PlateID,WellID,SiteID,TimePoint)
+  ImagePath = GetIMPath(SERVER,ID,PWD,PlateID,WellID,SiteID,TimePoint,Z)
   
   #======================================================================================
   

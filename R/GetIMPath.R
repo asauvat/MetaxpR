@@ -10,8 +10,8 @@
 #' @param PlateID the Plate Identifier
 #' @param WellID the Well Identifier
 #' @param SiteID a vector of 2 integers showing x and y site positions. If only one site present, x and y equal 0
+#' @param Z The Z position of the image. Default is 1, value if no stacks is recorded. 0 for max projection, if recorded
 #' @param TimePoint From what timepoint the image name should be returned. Default is 1.
-#' @param pst collapsing pattern. Default is '\\'. Empty '' can be needed in some cases.
 #' @param Unix.diff the string replacement for the mounting point of UNC image location, when accessed from linux machine
 #'
 #' @return A string array containing full image names
@@ -28,7 +28,7 @@
 #' @export
 #'
 
-GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, WellID,SiteID,TimePoint=1,pst='\\',Unix.diff=c('//','/media/')){
+GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, WellID,SiteID,TimePoint=1,Z=1,Unix.diff=c('//','/media/')){
   
   #======================================================
   
@@ -41,19 +41,28 @@ GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, Well
   
   #======================================================
   
-  WTAB = sqlQuery(ch,paste0("SELECT * FROM SITE WHERE PLATE_ID=",PlateID," AND WELL_X=",WellX,"AND WELL_Y=",WellY))
-  WTAB = WTAB[which(WTAB$X_POSITION==SiteID[1] & WTAB$Y_POSITION==SiteID[2]),]
-  
+  WTAB = sqlQuery(ch,paste0("SELECT * FROM SITE WHERE PLATE_ID=",PlateID," AND WELL_X=",WellX," AND WELL_Y=",WellY," AND X_POSITION=",SiteID[1]," AND Y_POSITION=",SiteID[2]))
+
   if(nrow(WTAB)==0){
     PATH=NULL
   }else{
-  IMID = sqlQuery(ch,paste0("SELECT IMAGE_ID FROM PLATE_IMAGES WHERE SITE_ID=",WTAB$SITE_ID,"AND T_INDEX=",TimePoint))
+  IMID = sqlQuery(ch,paste0("SELECT IMAGE_ID FROM PLATE_IMAGES WHERE SITE_ID=",WTAB$SITE_ID,"AND T_INDEX=",TimePoint,"AND Z_INDEX=",Z))
   IMINFO = sqlQuery(ch,paste0("SELECT OBJ_SERVER_NAME,LOCATION_ID FROM PLATE_IMAGE_DATA WHERE OBJ_ID IN (",paste0(IMID[,"IMAGE_ID"],collapse=','),")"))
-  
+  #
   ROOT = sqlQuery(ch,paste0("SELECT SERVER_NAME,DIRECTORY FROM FILE_LOCATION WHERE LOCATION_ID=",IMINFO$LOCATION_ID[1]))
-  PATH = paste0(ROOT$SERVER_NAME,ROOT$DIRECTORY,pst,IMINFO$OBJ_SERVER_NAME)
+  ROOT = paste(ROOT$SERVER_NAME,ROOT$DIRECTORY,sep='\\');ROOT=gsub('//|///','/',gsub('[\\]','/',ROOT)) 
+  #
+  if(substr(ROOT,1,2)!='//'){ROOT=paste0('/',ROOT)} 
+  if(substr(ROOT,nchar(ROOT),nchar(ROOT))!='/'){ROOT=paste0(ROOT,'/')}
+  #
+  SERV = unlist(strsplit(ROOT,'/'))[3]
+  nSERV = paste0(toupper(substr(SERV,1,1)),tolower(substr(SERV,2,nchar(SERV))))
+  ROOT = gsub(SERV,nSERV,ROOT)
+  #
+  PATH = paste0(ROOT,IMINFO$OBJ_SERVER_NAME)
+  #
   if(.Platform$OS.type=='unix'){
-    PATH=gsub(Unix.diff[1],Unix.diff[2],gsub('[\\]','/',PATH))
+    PATH=gsub(Unix.diff[1],Unix.diff[2],PATH)
     }
   }
   #======================================================

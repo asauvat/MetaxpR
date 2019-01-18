@@ -4,11 +4,11 @@
 \alias{GetIM}
 \title{Whole Image Query}
 \usage{
-GetIM(SERVER = "MDCStore", ID = "moldev", PWD = "moldev", PlateID, WellID,
-  SiteID = c(1, 1), Range = lapply(1:3, function(x) c(0, 0.1)),
-  use.autoRange = T, col.order = c("blue", "green", "red"),
-  channel.choice = 1:3, disp = "raster", TimeCourse = F, TimePoint = 1,
-  resize = F, dim.resize = 600, returnMat = F, ...)
+GetIM(SERVER = "MDCStore", ID = "moldev", PWD = "moldev", PlateID,
+  WellID, SiteID = c(1, 1), Z = 1, Range = lapply(1:3, function(x)
+  c(0, 0.1)), use.autoRange = T, col.order = c("blue", "green", "red"),
+  channel.choice = 1:3, disp = "raster", TimeCourse = F,
+  TimePoint = 1, resize = F, dim.resize = 600, returnMat = F, ...)
 }
 \arguments{
 \item{SERVER}{the odbc connexion to MDCStore database. Ignored if DB given}
@@ -22,6 +22,8 @@ GetIM(SERVER = "MDCStore", ID = "moldev", PWD = "moldev", PlateID, WellID,
 \item{WellID}{the WellID of the image}
 
 \item{SiteID}{the SiteID of the image}
+
+\item{Z}{The Z position of the image. Default is 1, value if no stacks is recorded. 0 for max projection, if recorded}
 
 \item{Range}{a list containing range values dor each channel image normalization (see normalize from EBImage)}
 

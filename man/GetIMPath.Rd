@@ -4,8 +4,8 @@
 \alias{GetIMPath}
 \title{Quick image name finding}
 \usage{
-GetIMPath(SERVER = "MDCStore", ID = "moldev", PWD = "moldev", PlateID,
-  WellID, SiteID, TimePoint = 1, pst = "\\\\", Unix.diff = c("//",
+GetIMPath(SERVER = "MDCStore", ID = "moldev", PWD = "moldev",
+  PlateID, WellID, SiteID, TimePoint = 1, Z = 1, Unix.diff = c("//",
   "/media/"))
 }
 \arguments{
@@ -23,7 +23,7 @@ GetIMPath(SERVER = "MDCStore", ID = "moldev", PWD = "moldev", PlateID,
 
 \item{TimePoint}{From what timepoint the image name should be returned. Default is 1.}
 
-\item{pst}{collapsing pattern. Default is '\\'. Empty '' can be needed in some cases.}
+\item{Z}{The Z position of the image. Default is 1, value if no stacks is recorded. 0 for max projection, if recorded}
 
 \item{Unix.diff}{the string replacement for the mounting point of UNC image location, when accessed from linux machine}
 }
