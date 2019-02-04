@@ -60,10 +60,17 @@ GetMDCInfo = function(SERVER='MDCStore',ID='moldev', PWD='moldev', Unix.diff=c('
   if(.Platform$OS.type=='unix'){
     FileLoc$SERVER_NAME = sapply(FileLoc$SERVER_NAME, function(x)gsub(Unix.diff[1],Unix.diff[2],as.character(x)))
   }
-  FileLoc$Full.Name = gsub('/TimePoint_.*','',paste0(FileLoc$SERVER_NAME,FileLoc$DIRECTORY))
+  FileLoc$Full.Name = apply(FileLoc[,c('SERVER_NAME','DIRECTORY')],1,function(x){
+    if(substr(x[1],nchar(x[1]),nchar(x[1]))=='/' & substr(x[2],1,1)=='/'){
+     return(gsub('/TimePoint_.*','',paste0(x[1],substr(x[2],2,nchar(x[2]))))) 
+    }else{
+      return(gsub('/TimePoint_.*','',paste0(x[1],x[2])))
+    }
+  })
   #
   suppressWarnings({FileLoc$PLATE_ID = as.numeric(basename(FileLoc$Full.Name))})
   FileLoc = FileLoc[!duplicated(FileLoc$PLATE_ID),]
+  #
   INFO = merge(INFO, FileLoc[c('Full.Name','PLATE_ID')], by = 'PLATE_ID',all=T)
   
   #===========================================================================
