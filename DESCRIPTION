@@ -3,7 +3,7 @@ Version: 0.5.0
 Date: 2017-05-04
 Title: MetaxpR
 Description: Basic functions for communicating with MetaXpress software
-Imports: RODBC,EBImage,flowCore
+Imports: RODBC,EBImage,flowCore,reshape
 Author: Allan Sauvat <allan.sauvat@gustaveroussy.fr>
 Maintainer: Allan Sauvat <allan.sauvat@gustaveroussy.fr>
 License: GPL (> 2)
