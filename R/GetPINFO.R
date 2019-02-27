@@ -40,11 +40,13 @@ GetPINFO = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID){
   };rm(i)
   
   TIME = as.numeric(sqlQuery(ch,paste0("SELECT MIN(T_INDEX),MAX(T_INDEX) FROM PLATE_IMAGES WHERE SITE_ID=",CONF$SITE_ID[1])))
+  SID = t(apply(CONF[which(CONF$WELL==unique(CONF$WELL)[1]),c('X_POSITION','Y_POSITION')],1,function(x)c(x)));colnames(SID)=c('sx','sy')
   if(TIME[1]==TIME[2]){TIME=TIME[1]}
 
   #======================================================
   odbcClose(ch)
   
-  return(list(WID=unique(CONF$WELL),SID=c(max(CONF$X_POSITION),max(CONF$Y_POSITION)),TID=TIME))
+  
+  return(list(WID=unique(CONF$WELL),SID=SID,TID=TIME))
   
 }
