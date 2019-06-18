@@ -18,7 +18,7 @@ data.reduc(data.table, NameIndex, VarIndexes, Ctrl, it = 0, spt = "_",
 
 \item{it}{Shall t.test/normalization be applied recursively ?}
 
-\item{spt}{The linker used in condition names (see example)#'}
+\item{spt}{The linker used in condition names (see example)}
 
 \item{sem}{Shall sem be calculated instead of sd ?}
 

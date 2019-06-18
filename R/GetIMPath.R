@@ -49,11 +49,15 @@ GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, Well
   IMID = sqlQuery(ch,paste0("SELECT IMAGE_ID FROM PLATE_IMAGES WHERE SITE_ID=",WTAB$SITE_ID,"AND T_INDEX=",TimePoint,"AND Z_INDEX=",Z))
   IMINFO = sqlQuery(ch,paste0("SELECT OBJ_SERVER_NAME,LOCATION_ID FROM PLATE_IMAGE_DATA WHERE OBJ_ID IN (",paste0(IMID[,"IMAGE_ID"],collapse=','),")"))
   #
-  ROOT = sqlQuery(ch,paste0("SELECT SERVER_NAME,DIRECTORY FROM FILE_LOCATION WHERE LOCATION_ID=",IMINFO$LOCATION_ID[1]))
+  #ROOT = sqlQuery(ch,paste0("SELECT SERVER_NAME,DIRECTORY FROM FILE_LOCATION WHERE LOCATION_ID=",IMINFO$LOCATION_ID[1]))
+  ROOT = do.call(rbind,lapply(1:nrow(IMINFO),function(i)sqlQuery(ch,paste0("SELECT SERVER_NAME,DIRECTORY FROM FILE_LOCATION WHERE LOCATION_ID=",IMINFO$LOCATION_ID[i]))))
   ROOT = paste(ROOT$SERVER_NAME,ROOT$DIRECTORY,sep='\\');ROOT=gsub('//|///','/',gsub('[\\]','/',ROOT)) 
   #
-  if(substr(ROOT,1,2)!='//'){ROOT=paste0('/',ROOT)} 
-  if(substr(ROOT,nchar(ROOT),nchar(ROOT))!='/'){ROOT=paste0(ROOT,'/')}
+  ROOT=apply(as.matrix(ROOT),1,function(li){
+    if(substr(li,1,2)!='//'){li=paste0('/',li)} 
+    if(substr(li,nchar(li),nchar(li))!='/'){li=paste0(li,'/')}
+    return(li)
+  })
   #
   SERV = unlist(strsplit(ROOT,'/'))[3]
   nSERV = paste0(toupper(substr(SERV,1,1)),tolower(substr(SERV,2,nchar(SERV))))
@@ -61,9 +65,7 @@ GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, Well
   #
   PATH = paste0(ROOT,IMINFO$OBJ_SERVER_NAME)
   #
-  if(.Platform$OS.type=='unix'){
-    PATH=gsub(Unix.diff[1],Unix.diff[2],PATH)
-    }
+  if(.Platform$OS.type=='unix'){PATH=gsub(Unix.diff[1],Unix.diff[2],PATH)}
   }
   #======================================================
   odbcClose(ch)

@@ -9,7 +9,7 @@
 #' @param VarIndexes The column names/indexes whit variables of interest
 #' @param Ctrl A character string that contains the name of the control against which t.test will be performed
 #' @param it Shall t.test/normalization be applied recursively ?
-#' @param spt The linker used in condition names (see example)#'
+#' @param spt The linker used in condition names (see example)
 #' @param sem Shall sem be calculated instead of sd ?
 #' @param trunc.set Shall data outlyers be removed automatically?
 #' @param d.norm Shall normalization to control be applied ?
@@ -31,27 +31,24 @@ data.reduc = function(data.table, NameIndex, VarIndexes, Ctrl,it=0,spt='_',sem=F
   
   #=========
   if(sem){
-    sdcal = function(x,...)sd(x)/sqrt(length(x))
+    sdcal = function(x,...)sd(x,...)/sqrt(length(x,...))
   }else{
-    sdcal = function(x,...)sd(x)
+    sdcal = function(x,...)sd(x,...)
   }
   #=========
   if(trunc.set){
-    meancal = function(x,...)mean(trunc.val(x))
-    varcal = function(x,...)sdcal(trunc.val(x))
+    meancal = function(x,...)mean(trunc.val(x),...)
+    varcal = function(x,...)sdcal(trunc.val(x),...)
     t.testcal = function(x,y,...)t.test(trunc.val(x),trunc.val(y),...)
   }else{
-    meancal = function(x,...)mean(x)
-    varcal = function(x,...)sdcal(x)
+    meancal = function(x,...)mean(x,...)
+    varcal = function(x,...)sdcal(x,...)
     t.testcal = function(x,y,...)t.test(x,y,...)
   }
 
   #1.Get means ,sds, and it0 p-values==========================================
   
-  if(!any(grepl(Ctrl,data.table[,NameIndex]))){
-    return('Cannot find control in data set')
-  }
-    
+  if(!any(grepl(Ctrl,data.table[,NameIndex]))){return('Cannot find control in data set')}
   data.table[,NameIndex] = gsub('[.]',',',data.table[,NameIndex]) #dot can cause problems...
   #
   Stat = by(data.table[,sort(VarIndexes)],data.table[,NameIndex],function(x)lapply(seq_along(x),
