@@ -27,9 +27,7 @@
 
 GetMDCData = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',MeasurementID, getsite = T, TimeCourse = F){
   
-  if(missing(MeasurementID)){
-    return('Please give the measurement ID !')
-  }
+  if(missing(MeasurementID)){return('Please give the measurement ID !')}
   
   #======================================================
   
@@ -41,9 +39,7 @@ GetMDCData = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',MeasurementI
   TAB$UNIQUE_ID = as.numeric(gsub('MIC','',TAB$TABLE_NAME))
   TAB = TAB[order(TAB$UNIQUE_ID),,drop=F]
   
-  if(!any(TAB$UNIQUE_ID==MeasurementID)){
-    return('No matching analysis in database')
-  }
+  if(!any(TAB$UNIQUE_ID==MeasurementID)){return('No matching analysis in database')}
   
   #=====================================================
   
@@ -52,27 +48,23 @@ GetMDCData = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',MeasurementI
   
   #=====================================================
   
-  if(getsite){
-    SITES = sqlQuery(ch,paste('SELECT SITE_ID, X_POSITION, Y_POSITION FROM SITE WHERE PLATE_ID = ',PLATE_ID))
-  }
+  if(getsite){SITES = sqlQuery(ch,paste('SELECT SITE_ID, X_POSITION, Y_POSITION FROM SITE WHERE PLATE_ID = ',PLATE_ID))}
   
   if(TimeCourse){
-    #TIME = sqlQuery(ch,paste('SELECT SERIES_ID, T_INDEX, T_MICROSECONDS FROM SERIES_INFO WHERE SERIES_ID IN ',paste('(',paste(unique(RES$SERIES_ID),collapse=','),')',sep='')))
     TIME=data.frame(t(sapply(unique(RES$SERIES_ID),function(x)sqlQuery(ch,paste('SELECT SERIES_ID, T_INDEX, T_MICROSECONDS FROM SERIES_INFO WHERE SERIES_ID IN (',x,')')))))
     RES = merge(RES, TIME, by = 'SERIES_ID' )
   }
   
   #=====================================================
   
-  FEAT = sqlQuery(ch,"SELECT COLUMN_NAME,MEAS_NAME FROM TABLE_COLUMNS WHERE COLUMN_NAME LIKE '%MDCS%'")
+  FEAT = sqlQuery(ch,paste0("SELECT COLUMN_NAME,MEAS_NAME FROM TABLE_COLUMNS WHERE COLUMN_NAME LIKE '%MDCS%' AND ENTITY_ID=",MeasurementID))
+  rownames(FEAT)=FEAT$COLUMN_NAME
   
   odbcClose(ch)
   
   #=====================================================
   
-  FEAT = tapply(as.character(FEAT$MEAS_NAME), FEAT$COLUMN_NAME, function(x)head(x,n=1))
-  FEAT = data.frame(COLUMN_NAME = names(FEAT), MEAS_NAME = as.character(FEAT))
-  colnames(RES)[grep('MDCS',colnames(RES))] = gsub('Cell: ','',merge(data.frame(COLUMN_NAME=colnames(RES)[grep('MDCS',colnames(RES))]),FEAT,sort=F)$MEAS_NAME)
+  colnames(RES)[grep('MDCS',colnames(RES))] = gsub('Cell: ','',FEAT[grep('MDCS',colnames(RES),value=T),'MEAS_NAME'])
   
   #=====================================================
   

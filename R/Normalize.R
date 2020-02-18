@@ -21,7 +21,7 @@
 #' @export
 #'
 
-Normalize = function(ImObj,inputRange,autoRange=F,step=0.005,verbose=T){
+Normalize = function(ImObj,inputRange,autoRange=T,step=5*10**-3,verbose=F){
   
   #-----------------------------------------------------
   if(missing(ImObj)){

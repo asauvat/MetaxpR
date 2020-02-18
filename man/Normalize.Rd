@@ -4,8 +4,8 @@
 \alias{Normalize}
 \title{Image normalization}
 \usage{
-Normalize(ImObj, inputRange, autoRange = F, step = 0.005,
-  verbose = T)
+Normalize(ImObj, inputRange, autoRange = T, step = 5 * 10^-3,
+  verbose = F)
 }
 \arguments{
 \item{ImObj}{An array, a matrix or an image}
