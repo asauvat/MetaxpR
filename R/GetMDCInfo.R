@@ -58,7 +58,7 @@ GetMDCInfo = function(SERVER='MDCStore',ID='moldev', PWD='moldev', Unix.diff=c('
   FileLoc[,c('SERVER_NAME','DIRECTORY')] = apply(FileLoc[,c('SERVER_NAME','DIRECTORY')],2,function(x)gsub('[\\]','/',x))
   #
   if(.Platform$OS.type=='unix'){
-    FileLoc$SERVER_NAME = sapply(FileLoc$SERVER_NAME, function(x)gsub(Unix.diff[1],Unix.diff[2],as.character(x)))
+    FileLoc$SERVER_NAME = sapply(FileLoc$SERVER_NAME, function(x)gsub(Unix.diff[1],Unix.diff[2],as.character(x),ignore.case=TRUE))
   }
   FileLoc$Full.Name = apply(FileLoc[,c('SERVER_NAME','DIRECTORY')],1,function(x){
     if(substr(x[1],nchar(x[1]),nchar(x[1]))=='/' & substr(x[2],1,1)=='/'){
