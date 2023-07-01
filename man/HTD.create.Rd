@@ -4,9 +4,15 @@
 \alias{HTD.create}
 \title{HTD file creation}
 \usage{
-HTD.create(Pty = 1, WellList = c("A01", "A02"), TimePt = 1,
-  PlateName = "Template", export, Sites = c(3, 3),
-  Channels = c("DAPI", "GFP"))
+HTD.create(
+  Pty = 1,
+  WellList = c("A01", "A02"),
+  TimePt = 1,
+  PlateName = "Template",
+  export,
+  Sites = c(3, 3),
+  Channels = c("DAPI", "GFP")
+)
 }
 \arguments{
 \item{Pty}{1 for 384-well plate, 2 for 96-well plate}

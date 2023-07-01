@@ -4,8 +4,14 @@
 \alias{GetMDCData}
 \title{Cell-by-Cell data Query}
 \usage{
-GetMDCData(SERVER = "MDCStore", ID = "moldev", PWD = "moldev",
-  MeasurementID, getsite = T, TimeCourse = F)
+GetMDCData(
+  SERVER = "MDCStore",
+  ID = "moldev",
+  PWD = "moldev",
+  MeasurementID,
+  getsite = T,
+  TimeCourse = F
+)
 }
 \arguments{
 \item{SERVER}{the odbc connexion to MDCStore database}

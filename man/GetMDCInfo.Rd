@@ -4,8 +4,12 @@
 \alias{GetMDCInfo}
 \title{MDCStore information Query}
 \usage{
-GetMDCInfo(SERVER = "MDCStore", ID = "moldev", PWD = "moldev",
-  Unix.diff = c("//", "/media/"))
+GetMDCInfo(
+  SERVER = "MDCStore",
+  ID = "moldev",
+  PWD = "moldev",
+  Unix.diff = c("//", "/media/")
+)
 }
 \arguments{
 \item{SERVER}{the odbc connexion to MDCStore database}

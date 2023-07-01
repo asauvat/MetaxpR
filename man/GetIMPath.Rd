@@ -4,9 +4,17 @@
 \alias{GetIMPath}
 \title{Quick image name finding}
 \usage{
-GetIMPath(SERVER = "MDCStore", ID = "moldev", PWD = "moldev",
-  PlateID, WellID, SiteID, TimePoint = 1, Z = 1, Unix.diff = c("//",
-  "/media/"))
+GetIMPath(
+  SERVER = "MDCStore",
+  ID = "moldev",
+  PWD = "moldev",
+  PlateID,
+  WellID,
+  SiteID,
+  TimePoint = 1,
+  Z = 1,
+  Unix.diff = c("//", "/media/")
+)
 }
 \arguments{
 \item{SERVER}{the odbc connexion to MDCStore database}

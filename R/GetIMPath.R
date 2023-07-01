@@ -46,6 +46,7 @@ GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, Well
   if(nrow(WTAB)==0){
     PATH=NULL
   }else{
+    
   IMID = sqlQuery(ch,paste0("SELECT IMAGE_ID FROM PLATE_IMAGES WHERE SITE_ID=",WTAB$SITE_ID,"AND T_INDEX=",TimePoint,"AND Z_INDEX=",Z))
   IMINFO = sqlQuery(ch,paste0("SELECT OBJ_SERVER_NAME,LOCATION_ID FROM PLATE_IMAGE_DATA WHERE OBJ_ID IN (",paste0(IMID[,"IMAGE_ID"],collapse=','),")"))
   #

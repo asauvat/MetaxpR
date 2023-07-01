@@ -4,8 +4,18 @@
 \alias{data.reduc}
 \title{Basic statistics}
 \usage{
-data.reduc(data.table, NameIndex, VarIndexes, Ctrl, it = 0, spt = "_",
-  sem = F, trunc.set = F, d.norm = F, alt = "two.sided")
+data.reduc(
+  data.table,
+  NameIndex,
+  VarIndexes,
+  Ctrl,
+  it = 0,
+  spt = "_",
+  sem = F,
+  trunc.set = F,
+  d.norm = F,
+  alt = "two.sided"
+)
 }
 \arguments{
 \item{data.table}{A data.frame on which stats are applied}
