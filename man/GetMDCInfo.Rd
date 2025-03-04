@@ -8,7 +8,7 @@ GetMDCInfo(
   SERVER = "MDCStore",
   ID = "moldev",
   PWD = "moldev",
-  Unix.diff = c("//", "/media/")
+  rdif = c("//", "//")
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ GetMDCInfo(
 
 \item{PWD}{the password for connexion}
 
-\item{Unix.diff}{the string replacement for the mounting point of UNC image location, when accessed from linux machine}
+\item{rdif}{the string replacement for the mounting point of UNC image location.}
 }
 \value{
 a data.frame with set of information about acquired plates

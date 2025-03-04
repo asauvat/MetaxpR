@@ -1,6 +1,6 @@
 Package: MetaxpR
-Version: 0.6.0
-Date: 2023-06-10
+Version: 0.6.1
+Date: 2024-11-21
 Title: MetaxpR
 Description: Basic functions for communicating with MetaXpress software
 Imports: RODBC,EBImage,flowCore,reshape, doParallel, pbapply
@@ -8,4 +8,4 @@ Author: Allan Sauvat <allan.sauvat@gustaveroussy.fr>
 Maintainer: Allan Sauvat <allan.sauvat@gustaveroussy.fr>
 License: GPL (> 2)
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2

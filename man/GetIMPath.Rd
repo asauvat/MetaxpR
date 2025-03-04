@@ -13,7 +13,7 @@ GetIMPath(
   SiteID,
   TimePoint = 1,
   Z = 1,
-  Unix.diff = c("//", "/media/")
+  rdif = c("//", "//")
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ GetIMPath(
 
 \item{Z}{The Z position of the image. Default is 1, value if no stacks is recorded. 0 for max projection, if recorded}
 
-\item{Unix.diff}{the string replacement for the mounting point of UNC image location, when accessed from linux machine}
+\item{rdif}{the string replacement for the mounting point of UNC image location}
 }
 \value{
 A string array containing full image names
@@ -43,9 +43,8 @@ Get MX image name(s) given its coordinates
 }
 \examples{
 #Not running
-DB = GetMDCInfo(SERVER = 'MDCStore',ID = 'sa', PWD = '***') 
-UniqueIDs=DB$MeasurementID[grep(paste0(1500:1515,collapse='|'),DB$PlateID)]) #Get uniquesIDs from plate 1500 to 1515
-MyData = lapply(UniqueIDs,function(x)GetMDCData(SERVER='YODA-SERVER',MeasurementID=x)) #Create a list that contains cellular data from each plate
+ips = GetIMPath(SERVER = 'MDCStore',ID = 'sa', PWD = '***',PlateID=10, WellID = 'A02', SiteID=c(1,1), TimePoint=1, Z=1) 
+imgs = readImage(ips)
 
 }
 \seealso{

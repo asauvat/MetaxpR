@@ -12,7 +12,7 @@
 #' @param SiteID a vector of 2 integers showing x and y site positions. If only one site present, x and y equal 0
 #' @param Z The Z position of the image. Default is 1, value if no stacks is recorded. 0 for max projection, if recorded
 #' @param TimePoint From what timepoint the image name should be returned. Default is 1.
-#' @param Unix.diff the string replacement for the mounting point of UNC image location, when accessed from linux machine
+#' @param rdif the string replacement for the mounting point of UNC image location
 #'
 #' @return A string array containing full image names
 #'
@@ -21,14 +21,13 @@
 #'
 #' @examples
 #'#Not running
-#'DB = GetMDCInfo(SERVER = 'MDCStore',ID = 'sa', PWD = '***') 
-#'UniqueIDs=DB$MeasurementID[grep(paste0(1500:1515,collapse='|'),DB$PlateID)]) #Get uniquesIDs from plate 1500 to 1515
-#'MyData = lapply(UniqueIDs,function(x)GetMDCData(SERVER='YODA-SERVER',MeasurementID=x)) #Create a list that contains cellular data from each plate
+#'ips = GetIMPath(SERVER = 'MDCStore',ID = 'sa', PWD = '***',PlateID=10, WellID = 'A02', SiteID=c(1,1), TimePoint=1, Z=1) 
+#'imgs = readImage(ips)
 #'
 #' @export
 #'
 
-GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, WellID,SiteID,TimePoint=1,Z=1,Unix.diff=c('//','/media/')){
+GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, WellID,SiteID,TimePoint=1,Z=1,rdif=c('//','//')){
   
   #======================================================
   
@@ -39,35 +38,32 @@ GetIMPath = function(SERVER = 'MDCStore',ID='moldev', PWD='moldev',PlateID, Well
   
   ch = odbcConnect(SERVER, uid = ID, pwd = PWD) 
   
-  #======================================================
-  
-  WTAB = sqlQuery(ch,paste0("SELECT * FROM SITE WHERE PLATE_ID=",PlateID," AND WELL_X=",WellX," AND WELL_Y=",WellY," AND X_POSITION=",SiteID[1]," AND Y_POSITION=",SiteID[2]))
-
-  if(nrow(WTAB)==0){
+  #=====================================================   
+  query = paste0(
+    "SELECT ",
+    "PLS.OBJ_SERVER_NAME, LOC.SERVER_NAME, LOC.DIRECTORY, PLS.LOCATION_ID ",
+    "FROM SITE AS S ",
+    "JOIN PLATE_IMAGES AS PI ON S.SITE_ID = PI.SITE_ID ",
+    "JOIN PLATE_IMAGE_DATA AS PLS ON PI.IMAGE_ID = PLS.OBJ_ID ",
+    "JOIN FILE_LOCATION AS LOC ON PLS.LOCATION_ID = LOC.LOCATION_ID ",
+    "WHERE S.PLATE_ID = ", PlateID, 
+    " AND S.WELL_X = ", WellX, 
+    " AND S.WELL_Y = ", WellY, 
+    " AND S.X_POSITION = ", SiteID[1], 
+    " AND S.Y_POSITION = ", SiteID[2], 
+    " AND PI.T_INDEX = ", TimePoint, 
+    " AND PI.Z_INDEX = ", Z
+  )
+  res = sqlQuery(ch, query)
+  if(nrow(res)==0){
     PATH=NULL
   }else{
-    
-  IMID = sqlQuery(ch,paste0("SELECT IMAGE_ID FROM PLATE_IMAGES WHERE SITE_ID=",WTAB$SITE_ID,"AND T_INDEX=",TimePoint,"AND Z_INDEX=",Z))
-  IMINFO = sqlQuery(ch,paste0("SELECT OBJ_SERVER_NAME,LOCATION_ID FROM PLATE_IMAGE_DATA WHERE OBJ_ID IN (",paste0(IMID[,"IMAGE_ID"],collapse=','),")"))
-  #
-  #ROOT = sqlQuery(ch,paste0("SELECT SERVER_NAME,DIRECTORY FROM FILE_LOCATION WHERE LOCATION_ID=",IMINFO$LOCATION_ID[1]))
-  ROOT = do.call(rbind,lapply(1:nrow(IMINFO),function(i)sqlQuery(ch,paste0("SELECT SERVER_NAME,DIRECTORY FROM FILE_LOCATION WHERE LOCATION_ID=",IMINFO$LOCATION_ID[i]))))
-  ROOT = paste(ROOT$SERVER_NAME,ROOT$DIRECTORY,sep='\\');ROOT=gsub('//|///','/',gsub('[\\]','/',ROOT)) 
-  #
-  ROOT=apply(as.matrix(ROOT),1,function(li){
-    if(substr(li,1,2)!='//'){li=paste0('/',li)} 
-    if(substr(li,nchar(li),nchar(li))!='/'){li=paste0(li,'/')}
-    return(li)
-  })
-  #
-  SERV = unlist(strsplit(ROOT,'/'))[3]
-  nSERV = paste0(toupper(substr(SERV,1,1)),tolower(substr(SERV,2,nchar(SERV))))
-  ROOT = gsub(SERV,nSERV,ROOT)
-  #
-  PATH = paste0(ROOT,IMINFO$OBJ_SERVER_NAME)
-  #
-  if(.Platform$OS.type=='unix'){PATH=gsub(Unix.diff[1],Unix.diff[2],PATH)}
+    PATH = file.path(paste0(res$SERVER_NAME,res$DIRECTORY),res$OBJ_SERVER_NAME)
+    PATH = gsub("[\\]","/",PATH) 
+    PATH = gsub(rdif[1],rdif[2],PATH)
   }
+  PATH = PATH[order(as.numeric(substr(sapply(strsplit(basename(PATH),'_'),function(x)tail(x,1)),2,2)))]
+  
   #======================================================
   odbcClose(ch)
   
